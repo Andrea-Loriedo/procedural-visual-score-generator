@@ -65,15 +65,21 @@ function draw3DScore() {
     let y = random(-height / 2 + 80, height / 2 - 50);
     let z = random(-200, 200);
     let s = random(30, 120);
-    let c = color(random(255), random(255), random(255), 180);
+
+    colorMode(HSB, 360, 100, 100, 255);
+    let hue = (i * 360 / numShapes + random(-30, 30)) % 360;
+    let sat = random(60, 100);
+    let bri = random(70, 100);
+    let alpha = random(140, 200);
+    let c = color(hue, sat, bri, alpha);
     fill(c);
     noStroke();
 
     let shapeType = int(random(3));
     push();
     translate(x, y, z);
-    if (shapeType === 0) sphere(s / 2); // sustained tone
-    else if (shapeType === 1) box(s);   // chord cluster
+    if (shapeType === 0) sphere(s / 2);
+    else if (shapeType === 1) box(s);
     else {
       beginShape();
       vertex(0, 0, 0);
@@ -84,18 +90,52 @@ function draw3DScore() {
     pop();
   }
 
-  stroke(0, 120);
-  strokeWeight(2);
   let numLines = int(lerp(2, 12, complexity));
   for (let j = 0; j < numLines; j++) {
+    colorMode(HSB, 360, 100, 100, 255);
+    let hue = (j * 360 / numLines + random(-20, 20)) % 360;
+    let sat = random(70, 100);
+    let bri = random(60, 100);
+    let alpha = random(120, 220);
+    stroke(color(hue, sat, bri, alpha));
+    strokeWeight(2);
+
+    let lineType = int(random(3));
     let x1 = random(-width / 2, width / 2);
     let y1 = random(-height / 2 + 80, height / 2);
     let z1 = random(-200, 200);
     let x2 = random(-width / 2, width / 2);
     let y2 = random(-height / 2 + 80, height / 2);
     let z2 = random(-200, 200);
-    line(x1, y1, z1, x2, y2, z2);
+
+    if (lineType === 0) {
+      line(x1, y1, z1, x2, y2, z2);
+    } else if (lineType === 1) {
+      noFill();
+      beginShape();
+      vertex(x1, y1, z1);
+      let cx1 = lerp(x1, x2, 0.33) + random(-50, 50);
+      let cy1 = lerp(y1, y2, 0.33) + random(-50, 50);
+      let cz1 = lerp(z1, z2, 0.33) + random(-50, 50);
+      let cx2 = lerp(x1, x2, 0.66) + random(-50, 50);
+      let cy2 = lerp(y1, y2, 0.66) + random(-50, 50);
+      let cz2 = lerp(z1, z2, 0.66) + random(-50, 50);
+      bezierVertex(cx1, cy1, cz1, cx2, cy2, cz2, x2, y2, z2);
+      endShape();
+    } else {
+      let steps = int(random(3, 7));
+      let prevX = x1, prevY = y1, prevZ = z1;
+      for (let k = 1; k <= steps; k++) {
+        let t = k / steps;
+        let nx = lerp(x1, x2, t) + random(-20, 20);
+        let ny = lerp(y1, y2, t) + random(-20, 20);
+        let nz = lerp(z1, z2, t) + random(-20, 20);
+        line(prevX, prevY, prevZ, nx, ny, nz);
+        prevX = nx; prevY = ny; prevZ = nz;
+      }
+    }
   }
+  colorMode(RGB, 255);
 }
 
 function draw2DScore() {
@@ -103,25 +143,62 @@ function draw2DScore() {
 
   let numShapes = int(lerp(3, 20, complexity));
   for (let i = 0; i < numShapes; i++) {
+    colorMode(HSB, 360, 100, 100, 255);
     let x = random(width);
     let y = random(80, height - 50);
     let s = random(30, 120);
-    let c = color(random(255), random(255), random(255), 180);
+    let hue = (i * 360 / numShapes + random(-30, 30)) % 360;
+    let sat = random(60, 100);
+    let bri = random(70, 100);
+    let alpha = random(140, 200);
+    let c = color(hue, sat, bri, alpha);
     fill(c);
     noStroke();
 
     let shapeType = int(random(3));
-    if (shapeType === 0) ellipse(x, y, s);            // sustained tone
-    else if (shapeType === 1) rect(x, y, s, s);       // chord cluster
-    else triangle(x, y, x + s, y, x + s / 2, y - s);  // staccato burst
+    if (shapeType === 0) ellipse(x, y, s);
+    else if (shapeType === 1) rect(x, y, s, s);
+    else triangle(x, y, x + s, y, x + s / 2, y - s);
   }
 
-  stroke(0, 120);
-  strokeWeight(2);
   let numLines = int(lerp(2, 12, complexity));
   for (let j = 0; j < numLines; j++) {
-    line(random(width), random(80, height), random(width), random(80, height));
+    colorMode(HSB, 360, 100, 100, 255);
+    let hue = (j * 360 / numLines + random(-20, 20)) % 360;
+    let sat = random(70, 100);
+    let bri = random(60, 100);
+    let alpha = random(120, 220);
+    stroke(color(hue, sat, bri, alpha));
+    strokeWeight(2);
+
+    let lineType = int(random(3));
+    let x1 = random(width);
+    let y1 = random(80, height);
+    let x2 = random(width);
+    let y2 = random(80, height);
+
+    if (lineType === 0) {
+      line(x1, y1, x2, y2);
+    } else if (lineType === 1) {
+      noFill();
+      let cx1 = lerp(x1, x2, 0.33) + random(-50, 50);
+      let cy1 = lerp(y1, y2, 0.33) + random(-50, 50);
+      let cx2 = lerp(x1, x2, 0.66) + random(-50, 50);
+      let cy2 = lerp(y1, y2, 0.66) + random(-50, 50);
+      bezier(x1, y1, cx1, cy1, cx2, cy2, x2, y2);
+    } else {
+      let steps = int(random(3, 7));
+      let prevX = x1, prevY = y1;
+      for (let k = 1; k <= steps; k++) {
+        let t = k / steps;
+        let nx = lerp(x1, x2, t) + random(-20, 20);
+        let ny = lerp(y1, y2, t) + random(-20, 20);
+        line(prevX, prevY, nx, ny);
+        prevX = nx; prevY = ny;
+      }
+    }
   }
+  colorMode(RGB, 255);
 }
 
 function windowResized() {

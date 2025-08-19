@@ -2,8 +2,12 @@
 // Procedural Visual Score Generator in p5.js
 
 let generateButton, saveButton, mode3DButton, complexitySlider, complexityLabel;
+let hDensitySlider, hDensityLabel, hDensityValue;
+let vDensitySlider, vDensityLabel, vDensityValue;
 let use3D = localStorage.getItem('use3D') === 'true';
 let complexity = 0.5;
+let hDensity = 0.5;
+let vDensity = 0.5;
 
 let angleX = 0;
 let angleY = 0;
@@ -30,8 +34,37 @@ function setup() {
   complexityLabel.parent('button-row');
   complexitySlider = createSlider(0, 1, 0.5, 0.01);
   complexitySlider.parent('button-row');
+  complexityValue = createSpan('50%');
+  complexityValue.parent('button-row');
   complexitySlider.input(() => {
     complexity = complexitySlider.value();
+    complexityValue.html(Math.round(complexity * 100) + '%');
+    generateScore();
+  });
+
+  // Horizontal density slider and label
+  hDensityLabel = createSpan('Horizontal Density: ');
+  hDensityLabel.parent('button-row');
+  hDensitySlider = createSlider(0, 1, 0.5, 0.01);
+  hDensitySlider.parent('button-row');
+  hDensityValue = createSpan('50%');
+  hDensityValue.parent('button-row');
+  hDensitySlider.input(() => {
+    hDensity = hDensitySlider.value();
+    hDensityValue.html(Math.round(hDensity * 100) + '%');
+    generateScore();
+  });
+
+  // Vertical density slider and label
+  vDensityLabel = createSpan('Vertical Density: ');
+  vDensityLabel.parent('button-row');
+  vDensitySlider = createSlider(0, 1, 0.5, 0.01);
+  vDensitySlider.parent('button-row');
+  vDensityValue = createSpan('50%');
+  vDensityValue.parent('button-row');
+  vDensitySlider.input(() => {
+    vDensity = vDensitySlider.value();
+    vDensityValue.html(Math.round(vDensity * 100) + '%');
     generateScore();
   });
 
@@ -255,9 +288,11 @@ function generateScore() {
   if (use3D) {
     colorMode(HSB, 360, 100, 100, 255);
     let numShapes = int(lerp(3, 40, complexity));
+    let xSpread = lerp(width * 0.3, width, hDensity);
+    let ySpread = lerp(height * 0.2, height, vDensity);
     for (let i = 0; i < numShapes; i++) {
-      let x = random(-width / 2, width / 2);
-      let y = random(-height / 2 + 80, height / 2 - 50);
+      let x = random(-xSpread / 2, xSpread / 2);
+      let y = random(-ySpread / 2 + 80, ySpread / 2 - 50);
       let z = random(-200, 200);
       let s = random(20, 140);
       let hue = (i * 360 / numShapes + random(-30, 30)) % 360;
@@ -276,11 +311,13 @@ function generateScore() {
       let alpha = random(120, 220);
       let c = color(hue, sat, bri, alpha);
       let lineType = int(random(4));
-      let x1 = random(-width / 2, width / 2);
-      let y1 = random(-height / 2 + 80, height / 2);
+      let xSpread = lerp(width * 0.3, width, hDensity);
+      let ySpread = lerp(height * 0.2, height, vDensity);
+      let x1 = random(-xSpread / 2, xSpread / 2);
+      let y1 = random(-ySpread / 2 + 80, ySpread / 2);
       let z1 = random(-200, 200);
-      let x2 = random(-width / 2, width / 2);
-      let y2 = random(-height / 2 + 80, height / 2);
+      let x2 = random(-xSpread / 2, xSpread / 2);
+      let y2 = random(-ySpread / 2 + 80, ySpread / 2);
       let z2 = random(-200, 200);
       lines3D.push(new VisualLine3D(x1, y1, z1, x2, y2, z2, lineType, c));
     }
@@ -293,9 +330,11 @@ function generateScore() {
   if (!use3D) {
     colorMode(HSB, 360, 100, 100, 255);
     let numShapes = int(lerp(3, 30, complexity));
+    let xSpread = lerp(width * 0.3, width, hDensity);
+    let ySpread = lerp((height - 50) * 0.2, height - 50, vDensity);
     for (let i = 0; i < numShapes; i++) {
-      let x = random(width);
-      let y = random(80, height - 50);
+      let x = random((width - xSpread) / 2, (width + xSpread) / 2);
+      let y = random(80, 80 + ySpread);
       let s = random(20, 140);
       let hue = (i * 360 / numShapes + random(-30, 30)) % 360;
       let sat = random(60, 100);
@@ -313,10 +352,12 @@ function generateScore() {
       let alpha = random(120, 220);
       let c = color(hue, sat, bri, alpha);
       let lineType = int(random(4));
-      let x1 = random(width);
-      let y1 = random(80, height);
-      let x2 = random(width);
-      let y2 = random(80, height);
+      let xSpread = lerp(width * 0.3, width, hDensity);
+      let ySpread = lerp((height - 50) * 0.2, height - 50, vDensity);
+      let x1 = random((width - xSpread) / 2, (width + xSpread) / 2);
+      let y1 = random(80, 80 + ySpread);
+      let x2 = random((width - xSpread) / 2, (width + xSpread) / 2);
+      let y2 = random(80, 80 + ySpread);
       lines2D.push(new VisualLine2D(x1, y1, x2, y2, lineType, c));
     }
     colorMode(RGB, 255);

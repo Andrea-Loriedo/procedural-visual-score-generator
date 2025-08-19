@@ -98,6 +98,7 @@ function setup() {
   saveButton.mousePressed(() => saveCanvas('visual_score', 'png'));
 
   generateScore();
+  setupKeyModal();
 }
 
 function toggle3DMode() {
@@ -426,4 +427,20 @@ function windowResized() {
   let h = min(windowHeight * 0.55, 700);
   resizeCanvas(w, h);
   generateScore();
+}
+
+function setupKeyModal() {
+  const keyBtn = document.getElementById('key-toggle');
+  const keyModal = document.getElementById('key-modal');
+  const keyClose = document.getElementById('key-close');
+  keyBtn.onclick = () => { keyModal.style.display = 'block'; keyModal.focus(); };
+  keyClose.onclick = () => { keyModal.style.display = 'none'; };
+  window.onclick = (e) => {
+    if (e.target === keyModal) keyModal.style.display = 'none';
+  };
+  window.addEventListener('keydown', (e) => {
+    if (keyModal.style.display === 'block' && (e.key === 'Escape' || e.key === 'Esc')) {
+      keyModal.style.display = 'none';
+    }
+  });
 }

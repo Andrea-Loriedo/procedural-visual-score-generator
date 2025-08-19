@@ -14,8 +14,47 @@
     <div id="button-row"></div>
     <div id="score-container">
     </div>
-    <div class="key">
-    🎨 Key: Circle = sustained tone | Square = chord | Triangle = staccato | Color = mood | Position = time
+    <button id="key-toggle" class="key-toggle-btn" aria-label="Show Visual Score Key">
+      <span style="font-size:1.3em;vertical-align:middle;">🎼</span> Key
+    </button>
+    <div id="key-modal" class="key-modal" aria-modal="true" role="dialog">
+      <div class="key-modal-content">
+        <span id="key-close" class="key-close" aria-label="Close Key">&times;</span>
+        <h2 style="margin-top:0;">Visual Score Key</h2>
+        <div class="key-intro" style="margin-bottom:12px;">
+          <em>
+            Free interpretation is encouraged; however, here is one way to read the generated score:
+          </em>
+        </div>
+        <ul>
+          <li><b>Circle / Sphere:</b> Sustained tone or drone</li>
+          <li><b>Square / Box:</b> Chord or harmonic block</li>
+          <li><b>Triangle / Pyramid:</b> Percussive or staccato event</li>
+        </ul>
+        <ul>
+          <li><b>Color (Hue):</b> Instrument or timbre (assign colors to instrument families)</li>
+          <li><b>Brightness:</b> Dynamic (brighter = louder)</li>
+          <li><b>Saturation:</b> Expressiveness (more saturated = more expressive)</li>
+        </ul>
+        <ul>
+          <li><b>Horizontal (X):</b> Time (left = earlier, right = later)</li>
+          <li><b>Vertical (Y):</b> Pitch (higher = higher pitch, lower = lower pitch)</li>
+          <li><b>Depth (Z, 3D):</b> Register or spatial placement</li>
+        </ul>
+        <ul>
+          <li><b>Size:</b> Larger = longer duration or more important; Smaller = shorter or less prominent</li>
+        </ul>
+        <ul>
+          <li><b>Line Style:</b>
+            <ul>
+              <li>Straight: Steady, continuous sound or phrase</li>
+              <li>Curved: Melodic contour or expressive gesture</li>
+              <li>Zigzag: Rhythmic pattern or syncopation</li>
+              <li>Wave: Oscillation, trill, or repeated figure</li>
+            </ul>
+          </li>
+        </ul>
+      </div>
     </div>
   </body>
 </html>

@@ -95,7 +95,7 @@ function setup() {
 
   saveButton = createButton('💾 Save Score');
   saveButton.parent(buttonGroup);
-  saveButton.mousePressed(() => saveCanvas('visual_score', 'png'));
+  saveButton.mousePressed(() => saveScore());
 
   generateScore();
   setupKeyModal();
@@ -405,6 +405,17 @@ function generateScore() {
     colorMode(RGB, 255);
   }
   redraw();
+}
+
+function saveScore() {
+  const mode = use3D ? '3d' : '2d';
+  const numShapes = use3D ? shapes3D.length : shapes2D.length;
+  const numLines = use3D ? lines3D.length : lines2D.length;
+  const hPerc = Math.round(hDensity * 100);
+  const vPerc = Math.round(vDensity * 100);
+  const cPerc = Math.round(complexity * 100);
+  const filename = `visual_score_${mode}_s${numShapes}_l${numLines}_h${hPerc}_v${vPerc}_c${cPerc}`;
+  saveCanvas(filename, 'png');
 }
 
 function draw3DScore() {

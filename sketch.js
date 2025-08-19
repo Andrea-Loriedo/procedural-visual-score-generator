@@ -254,12 +254,12 @@ function generateScore() {
   lines3D = [];
   if (use3D) {
     colorMode(HSB, 360, 100, 100, 255);
-    let numShapes = int(lerp(3, 20, complexity));
+    let numShapes = int(lerp(3, 40, complexity));
     for (let i = 0; i < numShapes; i++) {
       let x = random(-width / 2, width / 2);
       let y = random(-height / 2 + 80, height / 2 - 50);
       let z = random(-200, 200);
-      let s = random(30, 120);
+      let s = random(20, 140);
       let hue = (i * 360 / numShapes + random(-30, 30)) % 360;
       let sat = random(60, 100);
       let bri = random(70, 100);
@@ -268,7 +268,7 @@ function generateScore() {
       let shapeType = int(random(3));
       shapes3D.push(new VisualShape3D(x, y, z, s, shapeType, c));
     }
-    let numLines = int(lerp(2, 12, complexity));
+    let numLines = int(lerp(2, 30, complexity));
     for (let j = 0; j < numLines; j++) {
       let hue = (j * 360 / numLines + random(-20, 20)) % 360;
       let sat = random(70, 100);
@@ -292,11 +292,11 @@ function generateScore() {
   lines2D = [];
   if (!use3D) {
     colorMode(HSB, 360, 100, 100, 255);
-    let numShapes = int(lerp(3, 20, complexity));
+    let numShapes = int(lerp(3, 30, complexity));
     for (let i = 0; i < numShapes; i++) {
       let x = random(width);
       let y = random(80, height - 50);
-      let s = random(30, 120);
+      let s = random(20, 140);
       let hue = (i * 360 / numShapes + random(-30, 30)) % 360;
       let sat = random(60, 100);
       let bri = random(70, 100);

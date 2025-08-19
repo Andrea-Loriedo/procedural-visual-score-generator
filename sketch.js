@@ -120,7 +120,7 @@ class VisualShape3D {
     this.y = y;
     this.z = z;
     this.s = s;
-    this.type = type; // 0: sphere, 1: box, 2: triangle
+    this.type = type; // 0: sphere, 1: box, 2: pyramid
     this.color = color;
   }
 
@@ -134,11 +134,35 @@ class VisualShape3D {
     } else if (this.type === 1) {
       box(this.s);
     } else {
-      beginShape();
-      vertex(0, 0, 0);
-      vertex(this.s, 0, 0);
-      vertex(this.s / 2, -this.s, 0);
-      endShape(CLOSE);
+      let h = this.s;
+      let half = this.s / 2;
+      beginShape(TRIANGLES);
+      vertex(-half, half, -half);
+      vertex(half, half, -half);
+      vertex(half, half, half);
+
+      vertex(-half, half, -half);
+      vertex(half, half, half);
+      vertex(-half, half, half);
+
+      // 4 sides
+      // Front
+      vertex(-half, half, half);
+      vertex(half, half, half);
+      vertex(0, -h/2, 0);
+      // Right
+      vertex(half, half, half);
+      vertex(half, half, -half);
+      vertex(0, -h/2, 0);
+      // Back
+      vertex(half, half, -half);
+      vertex(-half, half, -half);
+      vertex(0, -h/2, 0);
+      // Left
+      vertex(-half, half, -half);
+      vertex(-half, half, half);
+      vertex(0, -h/2, 0);
+      endShape();
     }
     pop();
   }

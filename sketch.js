@@ -1,8 +1,9 @@
 // sketch.js
 // Procedural Visual Score Generator in p5.js
 
-let generateButton, saveButton, mode3DButton;
+let generateButton, saveButton, mode3DButton, complexitySlider, complexityLabel;
 let use3D = localStorage.getItem('use3D') === 'true';
+let complexity = 0.5;
 
 function setup() {
   let w = min(windowWidth * 0.95, 900);
@@ -15,6 +16,16 @@ function setup() {
   }
   cnv.parent('score-container');
   noLoop();
+
+  // Complexity slider and label
+  complexityLabel = createSpan('Complexity: ');
+  complexityLabel.parent('button-row');
+  complexitySlider = createSlider(0, 1, 0.5, 0.01);
+  complexitySlider.parent('button-row');
+  complexitySlider.input(() => {
+    complexity = complexitySlider.value();
+    redraw();
+  });
 
   generateButton = createButton('🎲 Generate Score');
   generateButton.parent('button-row');
@@ -47,7 +58,8 @@ function draw3DScore() {
   background(255);
   orbitControl();
 
-  let numShapes = int(random(6, 15));
+  // Use complexity to control number of shapes/lines
+  let numShapes = int(lerp(3, 20, complexity));
   for (let i = 0; i < numShapes; i++) {
     let x = random(-width / 2, width / 2);
     let y = random(-height / 2 + 80, height / 2 - 50);
@@ -60,8 +72,8 @@ function draw3DScore() {
     let shapeType = int(random(3));
     push();
     translate(x, y, z);
-    if (shapeType === 0) sphere(s / 2);                // sustained tone
-    else if (shapeType === 1) box(s);                  // chord cluster
+    if (shapeType === 0) sphere(s / 2); // sustained tone
+    else if (shapeType === 1) box(s);   // chord cluster
     else {
       beginShape();
       vertex(0, 0, 0);
@@ -74,7 +86,7 @@ function draw3DScore() {
 
   stroke(0, 120);
   strokeWeight(2);
-  let numLines = int(random(3, 8));
+  let numLines = int(lerp(2, 12, complexity));
   for (let j = 0; j < numLines; j++) {
     let x1 = random(-width / 2, width / 2);
     let y1 = random(-height / 2 + 80, height / 2);
@@ -89,7 +101,7 @@ function draw3DScore() {
 function draw2DScore() {
   background(255);
 
-  let numShapes = int(random(6, 15));
+  let numShapes = int(lerp(3, 20, complexity));
   for (let i = 0; i < numShapes; i++) {
     let x = random(width);
     let y = random(80, height - 50);
@@ -106,7 +118,7 @@ function draw2DScore() {
 
   stroke(0, 120);
   strokeWeight(2);
-  let numLines = int(random(3, 8));
+  let numLines = int(lerp(2, 12, complexity));
   for (let j = 0; j < numLines; j++) {
     line(random(width), random(80, height), random(width), random(80, height));
   }

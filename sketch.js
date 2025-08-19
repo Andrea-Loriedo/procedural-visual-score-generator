@@ -18,8 +18,8 @@ let shapes3D = [], lines3D = [];
 let shapes2D = [], lines2D = [];
 
 function setup() {
-  let w = min(windowWidth * 0.95, 900);
-  let h = min(windowHeight * 0.6, 700);
+  let w = min(windowWidth * 0.98, 900);
+  let h = min(windowHeight * 0.55, 700);
   let cnv;
   if (use3D) {
     cnv = createCanvas(w, h, WEBGL);
@@ -29,56 +29,73 @@ function setup() {
   cnv.parent('score-container');
   noLoop();
 
-  // Complexity slider and label
-  complexityLabel = createSpan('Complexity: ');
-  complexityLabel.parent('button-row');
-  complexitySlider = createSlider(0, 1, 0.5, 0.01);
-  complexitySlider.parent('button-row');
-  complexityValue = createSpan('50%');
-  complexityValue.parent('button-row');
-  complexitySlider.input(() => {
-    complexity = complexitySlider.value();
-    complexityValue.html(Math.round(complexity * 100) + '%');
-    generateScore();
-  });
+  // --- Sliders in new order ---
+  let slidersContainer = select('#button-row');
 
-  // Horizontal density slider and label
+  // Horizontal density
   hDensityLabel = createSpan('Horizontal Density: ');
-  hDensityLabel.parent('button-row');
   hDensitySlider = createSlider(0, 1, 0.5, 0.01);
-  hDensitySlider.parent('button-row');
   hDensityValue = createSpan('50%');
-  hDensityValue.parent('button-row');
+  let hDensityGroup = createDiv();
+  hDensityGroup.class('slider-group');
+  hDensityLabel.parent(hDensityGroup);
+  hDensitySlider.parent(hDensityGroup);
+  hDensityValue.parent(hDensityGroup);
+  hDensityGroup.parent(slidersContainer);
   hDensitySlider.input(() => {
     hDensity = hDensitySlider.value();
     hDensityValue.html(Math.round(hDensity * 100) + '%');
     generateScore();
   });
 
-  // Vertical density slider and label
+  // Vertical density
   vDensityLabel = createSpan('Vertical Density: ');
-  vDensityLabel.parent('button-row');
   vDensitySlider = createSlider(0, 1, 0.5, 0.01);
-  vDensitySlider.parent('button-row');
   vDensityValue = createSpan('50%');
-  vDensityValue.parent('button-row');
+  let vDensityGroup = createDiv();
+  vDensityGroup.class('slider-group');
+  vDensityLabel.parent(vDensityGroup);
+  vDensitySlider.parent(vDensityGroup);
+  vDensityValue.parent(vDensityGroup);
+  vDensityGroup.parent(slidersContainer);
   vDensitySlider.input(() => {
     vDensity = vDensitySlider.value();
     vDensityValue.html(Math.round(vDensity * 100) + '%');
     generateScore();
   });
 
+  // Complexity
+  complexityLabel = createSpan('Complexity: ');
+  complexitySlider = createSlider(0, 1, 0.5, 0.01);
+  complexityValue = createSpan('50%');
+  let complexityGroup = createDiv();
+  complexityGroup.class('slider-group');
+  complexityLabel.parent(complexityGroup);
+  complexitySlider.parent(complexityGroup);
+  complexityValue.parent(complexityGroup);
+  complexityGroup.parent(slidersContainer);
+  complexitySlider.input(() => {
+    complexity = complexitySlider.value();
+    complexityValue.html(Math.round(complexity * 100) + '%');
+    generateScore();
+  });
+
+  // --- Buttons in a separate group ---
+  let buttonGroup = createDiv();
+  buttonGroup.class('button-group');
+  buttonGroup.parent(slidersContainer);
+
   generateButton = createButton('🎲 Generate Score');
-  generateButton.parent('button-row');
+  generateButton.parent(buttonGroup);
   generateButton.mousePressed(generateScore);
 
-  saveButton = createButton('💾 Save Score');
-  saveButton.parent('button-row');
-  saveButton.mousePressed(() => saveCanvas('visual_score', 'png'));
-
   mode3DButton = createButton('🌀 3D Mode: ' + (use3D ? 'ON' : 'OFF'));
-  mode3DButton.parent('button-row');
+  mode3DButton.parent(buttonGroup);
   mode3DButton.mousePressed(toggle3DMode);
+
+  saveButton = createButton('💾 Save Score');
+  saveButton.parent(buttonGroup);
+  saveButton.mousePressed(() => saveCanvas('visual_score', 'png'));
 
   generateScore();
 }
@@ -381,8 +398,8 @@ function draw2DScore() {
 }
 
 function windowResized() {
-  let w = min(windowWidth * 0.95, 900);
-  let h = min(windowHeight * 0.6, 700);
+  let w = min(windowWidth * 0.98, 900);
+  let h = min(windowHeight * 0.55, 700);
   resizeCanvas(w, h);
-  redraw();
+  generateScore();
 }

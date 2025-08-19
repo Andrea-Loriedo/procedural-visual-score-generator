@@ -5,6 +5,14 @@ let generateButton, saveButton, mode3DButton, complexitySlider, complexityLabel;
 let use3D = localStorage.getItem('use3D') === 'true';
 let complexity = 0.5;
 
+let angleX = 0;
+let angleY = 0;
+let lastMouseX, lastMouseY;
+let spinning = false;
+
+let shapes3D = [], lines3D = [];
+let shapes2D = [], lines2D = [];
+
 function setup() {
   let w = min(windowWidth * 0.95, 900);
   let h = min(windowHeight * 0.6, 700);
@@ -24,12 +32,12 @@ function setup() {
   complexitySlider.parent('button-row');
   complexitySlider.input(() => {
     complexity = complexitySlider.value();
-    redraw();
+    generateScore();
   });
 
   generateButton = createButton('🎲 Generate Score');
   generateButton.parent('button-row');
-  generateButton.mousePressed(redraw);
+  generateButton.mousePressed(generateScore);
 
   saveButton = createButton('💾 Save Score');
   saveButton.parent('button-row');
@@ -38,6 +46,8 @@ function setup() {
   mode3DButton = createButton('🌀 3D Mode: ' + (use3D ? 'ON' : 'OFF'));
   mode3DButton.parent('button-row');
   mode3DButton.mousePressed(toggle3DMode);
+
+  generateScore();
 }
 
 function toggle3DMode() {
@@ -217,85 +227,116 @@ class VisualLine2D {
   }
 }
 
+function mousePressed() {
+  if (use3D && mouseY < height && mouseY > 0 && mouseX < width && mouseX > 0) {
+    spinning = true;
+    lastMouseX = mouseX;
+    lastMouseY = mouseY;
+  }
+}
+
+function mouseDragged() {
+  if (use3D && spinning) {
+    angleY += (mouseX - lastMouseX) * 0.003;
+    angleX += (mouseY - lastMouseY) * 0.003;
+    lastMouseX = mouseX;
+    lastMouseY = mouseY;
+    redraw();
+  }
+}
+
+function mouseReleased() {
+  spinning = false;
+}
+
+function generateScore() {
+  shapes3D = [];
+  lines3D = [];
+  if (use3D) {
+    colorMode(HSB, 360, 100, 100, 255);
+    let numShapes = int(lerp(3, 20, complexity));
+    for (let i = 0; i < numShapes; i++) {
+      let x = random(-width / 2, width / 2);
+      let y = random(-height / 2 + 80, height / 2 - 50);
+      let z = random(-200, 200);
+      let s = random(30, 120);
+      let hue = (i * 360 / numShapes + random(-30, 30)) % 360;
+      let sat = random(60, 100);
+      let bri = random(70, 100);
+      let alpha = random(140, 200);
+      let c = color(hue, sat, bri, alpha);
+      let shapeType = int(random(3));
+      shapes3D.push(new VisualShape3D(x, y, z, s, shapeType, c));
+    }
+    let numLines = int(lerp(2, 12, complexity));
+    for (let j = 0; j < numLines; j++) {
+      let hue = (j * 360 / numLines + random(-20, 20)) % 360;
+      let sat = random(70, 100);
+      let bri = random(60, 100);
+      let alpha = random(120, 220);
+      let c = color(hue, sat, bri, alpha);
+      let lineType = int(random(4));
+      let x1 = random(-width / 2, width / 2);
+      let y1 = random(-height / 2 + 80, height / 2);
+      let z1 = random(-200, 200);
+      let x2 = random(-width / 2, width / 2);
+      let y2 = random(-height / 2 + 80, height / 2);
+      let z2 = random(-200, 200);
+      lines3D.push(new VisualLine3D(x1, y1, z1, x2, y2, z2, lineType, c));
+    }
+    colorMode(RGB, 255);
+  }
+
+  // Generate 2D shapes/lines
+  shapes2D = [];
+  lines2D = [];
+  if (!use3D) {
+    colorMode(HSB, 360, 100, 100, 255);
+    let numShapes = int(lerp(3, 20, complexity));
+    for (let i = 0; i < numShapes; i++) {
+      let x = random(width);
+      let y = random(80, height - 50);
+      let s = random(30, 120);
+      let hue = (i * 360 / numShapes + random(-30, 30)) % 360;
+      let sat = random(60, 100);
+      let bri = random(70, 100);
+      let alpha = random(140, 200);
+      let c = color(hue, sat, bri, alpha);
+      let shapeType = int(random(3));
+      shapes2D.push(new VisualShape2D(x, y, s, shapeType, c));
+    }
+    let numLines = int(lerp(2, 12, complexity));
+    for (let j = 0; j < numLines; j++) {
+      let hue = (j * 360 / numLines + random(-20, 20)) % 360;
+      let sat = random(70, 100);
+      let bri = random(60, 100);
+      let alpha = random(120, 220);
+      let c = color(hue, sat, bri, alpha);
+      let lineType = int(random(4));
+      let x1 = random(width);
+      let y1 = random(80, height);
+      let x2 = random(width);
+      let y2 = random(80, height);
+      lines2D.push(new VisualLine2D(x1, y1, x2, y2, lineType, c));
+    }
+    colorMode(RGB, 255);
+  }
+  redraw();
+}
+
 function draw3DScore() {
   background(255);
+  rotateX(angleX);
+  rotateY(angleY);
   orbitControl();
-
-  let numShapes = int(lerp(3, 20, complexity));
-  let shapes = [];
-  colorMode(HSB, 360, 100, 100, 255);
-  for (let i = 0; i < numShapes; i++) {
-    let x = random(-width / 2, width / 2);
-    let y = random(-height / 2 + 80, height / 2 - 50);
-    let z = random(-200, 200);
-    let s = random(30, 120);
-    let hue = (i * 360 / numShapes + random(-30, 30)) % 360;
-    let sat = random(60, 100);
-    let bri = random(70, 100);
-    let alpha = random(140, 200);
-    let c = color(hue, sat, bri, alpha);
-    let shapeType = int(random(3));
-    shapes.push(new VisualShape3D(x, y, z, s, shapeType, c));
-  }
-  for (let shape of shapes) shape.draw();
-
-  let numLines = int(lerp(2, 12, complexity));
-  let lines = [];
-  for (let j = 0; j < numLines; j++) {
-    let hue = (j * 360 / numLines + random(-20, 20)) % 360;
-    let sat = random(70, 100);
-    let bri = random(60, 100);
-    let alpha = random(120, 220);
-    let c = color(hue, sat, bri, alpha);
-    let lineType = int(random(4));
-    let x1 = random(-width / 2, width / 2);
-    let y1 = random(-height / 2 + 80, height / 2);
-    let z1 = random(-200, 200);
-    let x2 = random(-width / 2, width / 2);
-    let y2 = random(-height / 2 + 80, height / 2);
-    let z2 = random(-200, 200);
-    lines.push(new VisualLine3D(x1, y1, z1, x2, y2, z2, lineType, c));
-  }
-  for (let l of lines) l.draw();
-  colorMode(RGB, 255);
+  for (let shape of shapes3D) shape.draw();
+  for (let l of lines3D) l.draw();
 }
 
 function draw2DScore() {
   background(255);
-
-  let numShapes = int(lerp(3, 20, complexity));
-  let shapes = [];
-  colorMode(HSB, 360, 100, 100, 255);
-  for (let i = 0; i < numShapes; i++) {
-    let x = random(width);
-    let y = random(80, height - 50);
-    let s = random(30, 120);
-    let hue = (i * 360 / numShapes + random(-30, 30)) % 360;
-    let sat = random(60, 100);
-    let bri = random(70, 100);
-    let alpha = random(140, 200);
-    let c = color(hue, sat, bri, alpha);
-    let shapeType = int(random(3));
-    shapes.push(new VisualShape2D(x, y, s, shapeType, c));
-  }
-  for (let shape of shapes) shape.draw();
-
-  let numLines = int(lerp(2, 12, complexity));
-  let lines = [];
-  for (let j = 0; j < numLines; j++) {
-    let hue = (j * 360 / numLines + random(-20, 20)) % 360;
-    let sat = random(70, 100);
-    let bri = random(60, 100);
-    let alpha = random(120, 220);
-    let c = color(hue, sat, bri, alpha);
-    let lineType = int(random(4));
-    let x1 = random(width);
-    let y1 = random(80, height);
-    let x2 = random(width);
-    let y2 = random(80, height);
-    lines.push(new VisualLine2D(x1, y1, x2, y2, lineType, c));
-  }
-  for (let l of lines) l.draw();
+  for (let shape of shapes2D) shape.draw();
+  for (let l of lines2D) l.draw();
 }
 
 function windowResized() {

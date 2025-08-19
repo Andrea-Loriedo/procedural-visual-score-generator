@@ -2,24 +2,19 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>Procedural Visual Score Generator</title>
+    <title>Visual Score Generator</title>
     <script src="https://cdn.jsdelivr.net/npm/p5@1.9.0/lib/p5.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.9.0/lib/addons/p5.dom.min.js"></script>
     <script src="sketch.js"></script>
-    <style>
-      body {
-        font-family: Helvetica, sans-serif;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        padding: 20px;
-      }
-      canvas {
-        border: 1px solid #ccc;
-        margin-bottom: 10px;
-      }
-    </style>
+    <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <h2>🎼 Procedural Visual Score Generator</h2>
+    <div class="logo">Visual Score Generator</div>
+    <div id="button-row"></div>
+    <div id="score-container">
+    </div>
+    <div class="key">
+    🎨 Key: Circle = sustained tone | Square = chord | Triangle = staccato | Color = mood | Position = time
+    </div>
   </body>
 </html>

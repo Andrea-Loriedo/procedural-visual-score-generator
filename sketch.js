@@ -1,29 +1,93 @@
 // sketch.js
 // Procedural Visual Score Generator in p5.js
 
-let generateButton, saveButton;
+let generateButton, saveButton, mode3DButton;
+let use3D = localStorage.getItem('use3D') === 'true';
 
 function setup() {
-  createCanvas(800, 600);
+  let w = min(windowWidth * 0.95, 900);
+  let h = min(windowHeight * 0.6, 700);
+  let cnv;
+  if (use3D) {
+    cnv = createCanvas(w, h, WEBGL);
+  } else {
+    cnv = createCanvas(w, h);
+  }
+  cnv.parent('score-container');
   noLoop();
 
   generateButton = createButton('🎲 Generate Score');
-  generateButton.position(10, height + 20);
+  generateButton.parent('button-row');
   generateButton.mousePressed(redraw);
 
   saveButton = createButton('💾 Save Score');
-  saveButton.position(150, height + 20);
+  saveButton.parent('button-row');
   saveButton.mousePressed(() => saveCanvas('visual_score', 'png'));
 
-  textFont('Helvetica');
+  mode3DButton = createButton('🌀 3D Mode: ' + (use3D ? 'ON' : 'OFF'));
+  mode3DButton.parent('button-row');
+  mode3DButton.mousePressed(toggle3DMode);
+}
+
+function toggle3DMode() {
+  use3D = !use3D;
+  localStorage.setItem('use3D', use3D);
+  location.reload();
 }
 
 function draw() {
-  background(255);
+  if (use3D) {
+    draw3DScore();
+  } else {
+    draw2DScore();
+  }
+}
 
-  fill(30);
-  textSize(20);
-  text('Procedural Visual Score', 20, 30);
+function draw3DScore() {
+  background(255);
+  orbitControl();
+
+  let numShapes = int(random(6, 15));
+  for (let i = 0; i < numShapes; i++) {
+    let x = random(-width / 2, width / 2);
+    let y = random(-height / 2 + 80, height / 2 - 50);
+    let z = random(-200, 200);
+    let s = random(30, 120);
+    let c = color(random(255), random(255), random(255), 180);
+    fill(c);
+    noStroke();
+
+    let shapeType = int(random(3));
+    push();
+    translate(x, y, z);
+    if (shapeType === 0) sphere(s / 2);                // sustained tone
+    else if (shapeType === 1) box(s);                  // chord cluster
+    else {
+      beginShape();
+      vertex(0, 0, 0);
+      vertex(s, 0, 0);
+      vertex(s / 2, -s, 0);
+      endShape(CLOSE);
+    }
+    pop();
+  }
+
+  stroke(0, 120);
+  strokeWeight(2);
+  let numLines = int(random(3, 8));
+  for (let j = 0; j < numLines; j++) {
+    let x1 = random(-width / 2, width / 2);
+    let y1 = random(-height / 2 + 80, height / 2);
+    let z1 = random(-200, 200);
+    let x2 = random(-width / 2, width / 2);
+    let y2 = random(-height / 2 + 80, height / 2);
+    let z2 = random(-200, 200);
+    line(x1, y1, z1, x2, y2, z2);
+  }
+}
+
+function draw2DScore() {
+  background(255);
 
   let numShapes = int(random(6, 15));
   for (let i = 0; i < numShapes; i++) {
@@ -46,9 +110,11 @@ function draw() {
   for (let j = 0; j < numLines; j++) {
     line(random(width), random(80, height), random(width), random(80, height));
   }
+}
 
-  noStroke();
-  fill(0);
-  textSize(14);
-  text("🎨 Key: Circle = sustained tone | Square = chord | Triangle = staccato | Color = mood | Position = time", 20, height - 20);
+function windowResized() {
+  let w = min(windowWidth * 0.95, 900);
+  let h = min(windowHeight * 0.6, 700);
+  resizeCanvas(w, h);
+  redraw();
 }

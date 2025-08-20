@@ -248,6 +248,38 @@ canvas {
   }
 }
 
+@media (max-width: 700px) and (orientation: landscape) {
+  #button-row {
+    display: none !important;
+  }
+  #controls-toggle-btn {
+    display: block !important;
+  }
+}
+
+#controls-toggle-btn {
+  display: none;
+  position: fixed;
+  top: 12px;
+  right: 12px;
+  z-index: 250;
+  background: #fff;
+  color: #222;
+  border: 1.5px solid #bbb;
+  border-radius: 8px;
+  padding: 10px 18px;
+  font-size: 1.1em;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+}
+@media (prefers-color-scheme: dark) {
+  #controls-toggle-btn {
+    background: #232527;
+    color: #e6e6e6;
+    border: 1.5px solid #444;
+  }
+}
+
 /* ====== DARK MODE ====== */
 @media (prefers-color-scheme: dark) {
   html, body {
@@ -295,5 +327,8 @@ canvas {
   canvas {
     border: 1px solid #444;
     background: #181a1b;
+  }
+  .key-modal-content b {
+    color: #fff;
   }
 }

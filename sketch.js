@@ -99,6 +99,7 @@ function setup() {
 
   generateScore();
   setupKeyModal();
+  setupControlsToggle();
 }
 
 function toggle3DMode() {
@@ -481,6 +482,32 @@ function setupKeyModal() {
   window.addEventListener('keydown', (e) => {
     if (keyModal.style.display === 'block' && (e.key === 'Escape' || e.key === 'Esc')) {
       keyModal.style.display = 'none';
+    }
+  });
+}
+
+function setupControlsToggle() {
+  const toggleBtn = document.getElementById('controls-toggle-btn');
+  const controls = document.getElementById('button-row');
+  let controlsVisible = false;
+
+  toggleBtn.onclick = () => {
+    controlsVisible = !controlsVisible;
+    controls.style.display = controlsVisible ? 'flex' : 'none';
+    toggleBtn.innerHTML = controlsVisible
+      ? '<span style="font-size:1.2em;vertical-align:middle;">✕</span> Hide'
+      : '<span style="font-size:1.2em;vertical-align:middle;">☰</span> Controls';
+  };
+
+  window.addEventListener('orientationchange', () => {
+    if (window.innerWidth <= 700 && window.innerHeight < window.innerWidth) {
+      controls.style.display = 'none';
+      controlsVisible = false;
+      toggleBtn.innerHTML = '<span style="font-size:1.2em;vertical-align:middle;">☰</span> Controls';
+    } else {
+      controls.style.display = '';
+      controlsVisible = false;
+      toggleBtn.innerHTML = '<span style="font-size:1.2em;vertical-align:middle;">☰</span> Controls';
     }
   });
 }

@@ -418,7 +418,7 @@ function saveScore() {
   watermarkGfx.fill(60, 80, 80, 180);
   watermarkGfx.textStyle(ITALIC);
   let margin = 8 * dpr;
-  let watermark = "Graphic Score Generator by spinningplates";
+  let watermark = "Visual Score Generator by spinningplates";
   watermarkGfx.text(watermark, watermarkGfx.width - margin, watermarkGfx.height - margin);
 
   if (use3D) {

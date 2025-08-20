@@ -247,3 +247,53 @@ canvas {
     max-width: 100vw;
   }
 }
+
+/* ====== DARK MODE ====== */
+@media (prefers-color-scheme: dark) {
+  html, body {
+    background: #181a1b;
+    color: #e6e6e6;
+  }
+  .logo {
+    color: #fafafa;
+    text-shadow: 0 2px 8px #0004;
+  }
+  #button-row {
+    background: #181a1b;
+  }
+  .slider-group {
+    background: transparent;
+  }
+  input[type="range"] {
+    background: #181a1b;
+    border-radius: 6px;
+  }
+  .button-group > * {
+    background: #232527;
+    color: #e6e6e6;
+    border: 1.5px solid #444;
+  }
+  .key-modal-content {
+    background: #232527;
+    color: #e6e6e6;
+    box-shadow: 0 4px 24px #000b;
+  }
+  .key-modal-content h2 {
+    color: #fff;
+  }
+  .key-close {
+    color: #aaa;
+  }
+  .key-toggle-btn {
+    background: #232527;
+    color: #e6e6e6;
+    border: 1.5px solid #444;
+  }
+  .key-toggle-btn:hover, .key-toggle-btn:focus {
+    background: #181a1b;
+  }
+  canvas {
+    border: 1px solid #444;
+    background: #181a1b;
+  }
+}

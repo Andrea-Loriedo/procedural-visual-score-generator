@@ -50,6 +50,14 @@ body {
     box-sizing: border-box;
   }
 }
+/* --- mobile landscape screens --- */
+@media (max-width: 700px) and (orientation: landscape) {
+  html, body {
+    overflow-x: auto !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch;
+  }
+}
 /* --- desktop/laptop screens --- */
 @media (min-width: 701px) {
   #button-row {

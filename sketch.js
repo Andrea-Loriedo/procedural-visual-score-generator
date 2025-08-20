@@ -95,7 +95,7 @@ function setup() {
 
   saveButton = createButton('💾 Save Score');
   saveButton.parent(buttonGroup);
-  saveButton.mousePressed(() => saveScore());
+  saveButton.mousePressed(saveScore);
 
   generateScore();
   setupKeyModal();
@@ -408,14 +408,43 @@ function generateScore() {
 }
 
 function saveScore() {
+  let dpr = window.devicePixelRatio || 1;
+  let watermarkGfx = createGraphics(width * dpr, height * dpr);
+  watermarkGfx.pixelDensity(dpr);
+  watermarkGfx.clear();
+  watermarkGfx.textAlign(RIGHT, BOTTOM);
+  watermarkGfx.textSize(11 * dpr);
+  watermarkGfx.fill(60, 80, 80, 180);
+  watermarkGfx.textStyle(ITALIC);
+  let margin = 8 * dpr;
+  let watermark = "Graphic Score Generator by spinningplates";
+  watermarkGfx.text(watermark, watermarkGfx.width - margin, watermarkGfx.height - margin);
+
+  if (use3D) {
+    let mainCanvas = get();
+    let output = createGraphics(width, height);
+    output.image(mainCanvas, 0, 0, width, height);
+    output.image(watermarkGfx, 0, 0, width, height);
+    output.loadPixels();
+    save(output, makeScoreFilename() + '.png');
+    output.remove();
+  } else {
+    push();
+    image(watermarkGfx, 0, 0, width, height);
+    pop();
+    saveCanvas(makeScoreFilename(), 'png');
+    redraw();
+  }
+}
+
+function makeScoreFilename() {
   const mode = use3D ? '3d' : '2d';
   const numShapes = use3D ? shapes3D.length : shapes2D.length;
   const numLines = use3D ? lines3D.length : lines2D.length;
   const hPerc = Math.round(hDensity * 100);
   const vPerc = Math.round(vDensity * 100);
   const cPerc = Math.round(complexity * 100);
-  const filename = `visual_score_${mode}_s${numShapes}_l${numLines}_h${hPerc}_v${vPerc}_c${cPerc}`;
-  saveCanvas(filename, 'png');
+  return `visual_score_${mode}_s${numShapes}_l${numLines}_h${hPerc}_v${vPerc}_c${cPerc}`;
 }
 
 function draw3DScore() {

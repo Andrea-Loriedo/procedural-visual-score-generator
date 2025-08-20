@@ -1,5 +1,7 @@
 # Visual Score Generator
 
+Created for Songwriting Workshop with A. G. Cook at [School of Song](https://schoolofsong.org/).
+
 A procedural visual score generator for musicians and composers.  
 Randomize primitive shapes and tweak the score's overall complexity, horizontal and vertical density to produce unique graphic scores for musical interpretation.  
 Switch between 2D and 3D modes to play around with perspective and spatial information.

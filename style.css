@@ -296,4 +296,7 @@ canvas {
     border: 1px solid #444;
     background: #181a1b;
   }
+  .key-modal-content b {
+    color: #fff;
+  }
 }
